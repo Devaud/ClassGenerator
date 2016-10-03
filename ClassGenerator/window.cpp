@@ -16,23 +16,36 @@ Window::Window(QWidget *parent) : QMainWindow(parent)
     this->createDefinitionClass();
     this->createOptions();
     this->createComments();
-
-    this->m_generateButton = new QPushButton(tr("Generate"), this);
-    this->m_generateButton->setEnabled(false);
-    this->connect(this->m_generateButton, SIGNAL(clicked()), this, SLOT(generateCode()));
+    this->createButtons();
 
     // Add widget in the principal layout
     this->m_principalLayout->addWidget(this->m_definitionGroup);
     this->m_principalLayout->addWidget(this->m_optionsGroup);
     this->m_principalLayout->addWidget(this->m_commentsGroup);
-    this->m_principalLayout->addWidget(this->m_generateButton);
+    this->m_principalLayout->addLayout(this->m_buttonLayout);
 
     // Set the principal layout in the central zone
     this->m_centralZone->setLayout(m_principalLayout);
 
-
     // Set the central zone
     this->setCentralWidget(this->m_centralZone);
+}
+
+void Window::createButtons()
+{
+    // Generate button
+    this->m_generateButton = new QPushButton(tr("Generate"), this);
+    this->m_generateButton->setEnabled(false);
+    this->connect(this->m_generateButton, SIGNAL(clicked()), this, SLOT(generateCode()));
+
+    // Clear fields button
+    this->m_clearFields = new QPushButton(tr("Clear"), this);
+    this->connect(this->m_clearFields, SIGNAL(clicked()), this, SLOT(clearFields()));
+
+    // Button layout
+    this->m_buttonLayout = new QHBoxLayout();
+    this->m_buttonLayout->addWidget(this->m_generateButton);
+    this->m_buttonLayout->addWidget(this->m_clearFields);
 }
 
 void Window::createComments()
@@ -103,6 +116,12 @@ void Window::createAction()
     this->m_generateAction->setShortcut(QKeySequence("Ctrl+G"));
     this->m_generateAction->setEnabled(false);
     this->connect(this->m_generateAction, SIGNAL(triggered()), this, SLOT(generateCode()));
+
+    // Clear fields action
+    this->m_clearFieldsAction = new QAction(tr("Clear"), this);
+    this->m_clearFieldsAction->setShortcut(QKeySequence("Ctrl+E"));
+    this->connect(this->m_clearFieldsAction, SIGNAL(triggered()), this, SLOT(clearFields()));
+
 }
 
 void Window::createMenu()
@@ -110,6 +129,7 @@ void Window::createMenu()
     // File menu
     this->m_fileMenu = this->menuBar()->addMenu(tr("&File"));
     this->m_fileMenu->addAction(this->m_generateAction);
+    this->m_fileMenu->addAction(this->m_clearFieldsAction);
     this->m_fileMenu->addSeparator();
     this->m_fileMenu->addAction(this->m_quitAction);
 
@@ -134,6 +154,19 @@ void Window::editChanged(QString changedText)
     bool enaState = (changedText.size() > NULL_VALUE) ? true : false;
     this->m_generateAction->setEnabled(enaState);
     this->m_generateButton->setEnabled(enaState);
+}
+
+void Window::clearFields()
+{
+    this->m_nameEdit->setText(DEFAULT_TEXT);
+    this->m_heritageEdit->setText(DEFAULT_TEXT);
+    this->m_headerProtect->setChecked(DEFAULT_CHECKBOX);
+    this->m_generateConstructor->setChecked(DEFAULT_CHECKBOX);
+    this->m_generateDesctructor->setChecked(DEFAULT_CHECKBOX);
+    this->m_authorEdit->setText(DEFAULT_TEXT);
+    this->m_dateEdit->setDate(QDate::currentDate());
+    this->m_descEdit->setText(DEFAULT_TEXT);
+
 }
 
 void Window::generateCode()

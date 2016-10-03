@@ -30,26 +30,44 @@ public:
 signals:
 
 private slots:
+    ///
+    /// \brief Check if the edit is empty or not
+    /// \param changedText Text which changed
+    ///
     void editChanged(QString changedText);
     void generateCode();
 
+    ///
+    /// \brief Clear all fields (reset)
+    ///
+    void clearFields();
+
 private:
+    ///
+    /// \brief initialize the window application
+    ///
     void initialize();
     void createMenu();
     void createAction();
     void createDefinitionClass();
     void createOptions();
     void createComments();
+    void createButtons();
     QString generateHeader();
 
+    // Const
     static int const DEFAULT_WIDTH = 350;
     static int const DEFAULT_HEIGHT = 550;
     static int const NULL_VALUE = 0;
+    static QString const DEFAULT_TEXT = "";
+    static bool const DEFAULT_CHECKBOX = false;
 
+    // Fields
     QMenu *m_fileMenu;
     QMenu *m_helpMenu;
     QAction *m_quitAction;
     QAction *m_generateAction;
+    QAction *m_clearFieldsAction;
     QLineEdit *m_nameEdit;
     QLineEdit *m_heritageEdit;
     QFormLayout *m_definitionLayout;
@@ -67,6 +85,8 @@ private:
     QDateEdit *m_dateEdit;
     QTextEdit *m_descEdit;
     QPushButton *m_generateButton;
+    QPushButton *m_clearFields;
+    QHBoxLayout *m_buttonLayout;
 };
 
 #endif // WINDOW_H
